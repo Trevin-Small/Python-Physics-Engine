@@ -172,6 +172,8 @@ class KinematicBody(StaticBody):
 					self.friction_force_x = self.x_velo * self.mass
 		elif abs(self.x_velo) > KinematicBody.MIN_X_VELO:
 			self.friction_force_x = self.x_velo * self.mass
+		elif self.accel_x == 0:
+			self.friction_force_x = self.x_velo * self.mass
 		else:
 			self.friction_force_x = 0
 
@@ -193,6 +195,8 @@ class KinematicBody(StaticBody):
 				else:
 					self.friction_force_y = self.y_velo * self.mass
 		elif abs(self.y_velo) > KinematicBody.MIN_Y_VELO:
+			self.friction_force_y = self.y_velo * self.mass
+		elif self.accel_y == 0:
 			self.friction_force_y = self.y_velo * self.mass
 		else:
 			self.friction_force_y = 0
