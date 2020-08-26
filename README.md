@@ -4,7 +4,7 @@ This project is a simple 2D Physics Engine made with Python and Pygame.
 
 It may be used to build a game later on, but for now the engine itself is still under development.
 
-#### Bodies ####
+### Bodies ###
 
 The engine is based off of bodies, shapes with a position and size that can be collided with.
 
@@ -16,4 +16,15 @@ The __Kinematic Body__ inherits from the __Static Body__. These bodies can move 
 
 ### What Needs Work? ###
 
-Currently, the momentum transfer is the feature that needs the most work. While it works correctly on the X axis, high velocity downwards collisions on the Y axis cause infinite energy transfer and incredibly fast oscillation of the Bodies.
+Currently, the momentum transfer is the feature that needs the most work. While it works correctly on the X axis, high velocity downwards collisions on the Y axis cause infinite energy transfer and incredibly fast oscillation of the Kinematic Bodies. ( I have NO IDEA why.)
+
+
+### Possible Future Features ###
+
+__Body Linking__ - Connect Kinematic Bodies together, share all kinematics. Treated as one body although may be made of several.
+
+__Rotational Motion__ - Center of Gravities of objects will allow for objects to rotate about them. Forces exerted on objects could cause some energy to be converted into rotational intertia of a kinematic body.
+
+__Ramps__ - Angled Static Bodies could interact with Kinematic bodies in interesting ways. Would require Kinematic bodies to be able to rotate. Force would be redirected upon impact with ramps, and frictional forces, normal forces and gravity would allow objects to accelerate down ramps.
+
+__Circular Collision Masks__ - Currently, collision masks of bodies are strictly rectangular. Circular masks would allow for more shapes to collide naturally.
