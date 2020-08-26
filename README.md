@@ -6,7 +6,7 @@ It may be used to build a game later on, but for now the engine itself is still 
 
 #### Bodies ####
 
-The engine is built off of bodies, shapes with a position and size.
+The engine is based off of bodies, shapes with a position and size that can be collided with.
 
 __Static Body VS Kinematic Body__
 
