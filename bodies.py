@@ -68,8 +68,8 @@ class StaticBody():
 class KinematicBody(StaticBody):
 
 	MAX_COEFFICIENT_FRICTION = 0.9
-	MIN_X_VELO = 0.15
-	MIN_Y_VELO = 0.1
+	MIN_X_VELO = 0.3
+	MIN_Y_VELO = 0.3
 	MIN_BOUNCE_VELO = 2
 	YF_RATIO = 0.1
 	FRICTION_THRESHOLD = 0.1
@@ -134,9 +134,13 @@ class KinematicBody(StaticBody):
 		self.accel_x += magnitude_x
 		self.accel_y += magnitude_y
 
-	def apply_force(self, forces):
-		self.accel_x += forces[0] / self.mass
-		self.accel_y += forces[1] / self.mass
+	def apply_force(self, force_x, force_y):
+		self.accel_x += force_x / self.mass
+		self.accel_y += force_y / self.mass
+
+	def apply_momentum(self, momentum_x, momentum_y):
+		self.x_velo += momentum_x
+		self.y_velo += momentum_y
 
 	def get_x_force(self):
 		return self.accel_x * self.mass
@@ -153,40 +157,49 @@ class KinematicBody(StaticBody):
 	def temp_y_friction(self, temp_friction_y):
 		self.temp_friction_y = temp_friction_y
 
-	def friction(self, x_velo, y_velo, prev_x, prev_y, temp_friction_x, temp_friction_y):
+	def friction_x(self, x_velo, prev_x, temp_friction_x):
 
 		if abs(prev_x) > KinematicBody.MIN_X_VELO:
 			if temp_friction_x != None:
 				if abs(x_velo) > KinematicBody.MIN_X_VELO:
 					self.friction_force_x = (self.mass * x_velo * temp_friction_x)
 				else:
-					self.friction_force_x = self.mass * x_velo
+					self.friction_force_x = self.x_velo * self.mass
 			else:
 				if abs(x_velo) > KinematicBody.MIN_X_VELO:
 					self.friction_force_x = (self.mass * x_velo * self.constant_friction_x)
 				else:
-					self.friction_force_x = self.mass * x_velo
+					self.friction_force_x = self.x_velo * self.mass
+		elif abs(self.x_velo) > KinematicBody.MIN_X_VELO:
+			self.friction_force_x = self.x_velo * self.mass
 		else:
-			self.friction_force_x = self.mass * x_velo
+			self.friction_force_x = 0
+
+		self.temp_x_friction(None)
+
+		return -self.friction_force_x
+
+	def friction_y(self, y_velo, prev_y, temp_friction_y):
 
 		if abs(prev_y) > KinematicBody.MIN_Y_VELO:
 			if temp_friction_y != None:
 				if abs(y_velo) > KinematicBody.MIN_Y_VELO:
 					self.friction_force_y = (self.mass * y_velo * temp_friction_y)
 				else:
-					self.friction_force_y = self.mass * y_velo
+					self.friction_force_y = self.y_velo * self.mass
 			else:
 				if abs(y_velo) > KinematicBody.MIN_Y_VELO:
 					self.friction_force_y = (self.mass * y_velo * self.constant_friction_y)
 				else:
-					self.friction_force_y = self.mass * y_velo
+					self.friction_force_y = self.y_velo * self.mass
+		elif abs(self.y_velo) > KinematicBody.MIN_Y_VELO:
+			self.friction_force_y = self.y_velo * self.mass
 		else:
-			self.friction_force_y = self.mass * y_velo
+			self.friction_force_y = 0
 
-		self.temp_x_friction(None)
 		self.temp_y_friction(None)
 
-		return (-self.friction_force_x, -self.friction_force_y)
+		return -self.friction_force_y
 
 	def detect_collision(self, *args):
 		KinematicCollision = False
@@ -278,7 +291,6 @@ class KinematicBody(StaticBody):
 							prev_difference_x = self.prev_x_velo - body.get_prev_x()
 							self.future_y_velo = -net_y * (1 - self.systemic_mass)
 							self.future_y_pos = body_parameters[1] + body_parameters[3]
-							#self.apply_force(self.friction(difference_x, 0, prev_difference_x, 0, body_parameters[4], None))
 					elif side_collisions["b"] < side_collisions["t"] and side_collisions["b"] < side_collisions["l"] and side_collisions["b"] < side_collisions["r"]:				
 						if body.get_y_velo() > self.prev_y_velo:
 							net_y = self.y_velo + body.get_y_velo()
@@ -286,7 +298,6 @@ class KinematicBody(StaticBody):
 							prev_difference_x = self.prev_x_velo - body.get_prev_x()
 							self.future_y_velo = -net_y * (1 - self.systemic_mass)
 							self.future_y_pos = body_parameters[1] - self.height
-							#self.apply_force(self.friction(difference_x, 0, prev_difference_x, 0, body_parameters[4], None))
 					elif side_collisions["l"] < side_collisions["r"] and side_collisions["l"] < side_collisions["t"] and side_collisions["l"] < side_collisions["b"]:
 						x_collision = True
 						if body.get_x_velo() > self.prev_x_velo:
@@ -295,7 +306,6 @@ class KinematicBody(StaticBody):
 							prev_difference_y = self.prev_y_velo - body.get_prev_y()		
 							self.future_x_velo = net_x * (1 - self.systemic_mass)
 							self.future_x_pos = body_parameters[0] + body_parameters[2]
-							#self.apply_force(self.friction(0, difference_y, 0, prev_difference_y, None, body_parameters[4]))
 					elif side_collisions["r"] < side_collisions["l"] and side_collisions["r"] < side_collisions["t"] and side_collisions["r"] < side_collisions["b"]:
 						x_collision = True
 						if body.get_x_velo() < self.prev_x_velo:
@@ -303,19 +313,18 @@ class KinematicBody(StaticBody):
 							difference_y = self.y_velo - body.get_y_velo()
 							prev_difference_y = self.prev_y_velo - body.get_prev_y()				
 							self.future_x_velo = net_x * (1 - self.systemic_mass)
-							self.future_x_pos = body_parameters[0] - self.width
-							#self.apply_force(self.friction(0, difference_y, 0, prev_difference_y, None, body_parameters[4]))
 
 		if KinematicCollision == True:
+			KinematicCollision = False
 			if x_collision == True:
-				self.apply_force(self.friction(0, difference_y, 0, prev_difference_y, None, body_parameters[4]))
+				self.apply_force(self.friction_x(difference_y, prev_difference_y, body_parameters[4]), 0)
 			else:
-				self.apply_force(self.friction(difference_x, 0, prev_difference_x, 0, body_parameters[4], None))
+				self.apply_force(0, self.friction_y(difference_x, prev_difference_x, body_parameters[4]))
 
 	def interact(self, *args):
 		self.gravity()
-		self.apply_force(self.friction(self.x_velo, self.y_velo, self.prev_x_velo, self.prev_y_velo, self.temp_friction_x, self.temp_friction_y))
 		self.detect_collision(*args)
+		self.apply_force(self.friction_x(self.x_velo, self.prev_x_velo, self.temp_friction_x), self.friction_y(self.y_velo, self.prev_y_velo, self.temp_friction_y))
 
 	# Update postion of body with vectors
 	def update(self, *args):

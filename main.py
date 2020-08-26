@@ -45,8 +45,8 @@ Ice = StaticBody(390, 300, 250, 20, Materials["Ice"])
 
 def PlayerControls():
 	UP_FORCE = 170
-	RIGHT_FORCE = 4
-	LEFT_FORCE = -4
+	RIGHT_ACCEL = 0.3
+	LEFT_ACCEL = -0.3
 	MAX_X_VELO = 4
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -54,15 +54,15 @@ def PlayerControls():
 
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_w or event.key == pygame.K_UP:
-				Player.apply_force((0, UP_FORCE))
+				Player.apply_force(0, UP_FORCE)
 
 	keys = pygame.key.get_pressed()
 	if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
 		if Player.get_x_velo() < MAX_X_VELO:
-			Player.apply_force((RIGHT_FORCE, 0))
+			Player.accelerate(RIGHT_ACCEL, 0)
 	elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
 		if abs(Player.get_x_velo()) < MAX_X_VELO:
-			Player.apply_force((LEFT_FORCE, 0))
+			Player.accelerate(LEFT_ACCEL, 0)
 
 def fill_screen(color):
 	screen.fill(color)
