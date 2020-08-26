@@ -321,9 +321,9 @@ class KinematicBody(StaticBody):
 		if KinematicCollision == True:
 			KinematicCollision = False
 			if x_collision == True:
-				self.apply_force(self.friction_x(difference_y, prev_difference_y, body_parameters[4]), 0)
+				self.apply_force(0, self.friction_y(difference_y, prev_difference_y, body_parameters[4]))
 			else:
-				self.apply_force(0, self.friction_y(difference_x, prev_difference_x, body_parameters[4]))
+				self.apply_force(self.friction_x(difference_x, prev_difference_x, body_parameters[4]), 0)
 
 	def interact(self, *args):
 		self.gravity()
