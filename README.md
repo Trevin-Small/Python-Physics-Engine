@@ -16,7 +16,7 @@ The __Kinematic Body__ inherits from the __Static Body__. These bodies can move 
 
 ### What Needs Work? ###
 
-Currently, the momentum transfer is the feature that needs the most work. While it works correctly on the X axis, high velocity downwards collisions on the Y axis cause infinite energy transfer and incredibly fast oscillation of the Bodies.
+Currently, the momentum transfer is the feature that needs the most work. While it works correctly on the X axis, high velocity downwards collisions on the Y axis cause infinite energy transfer and incredibly fast oscillation of the Bodies. ( I have NO IDEA why.)
 
 
 ### Possible Future Features ###
