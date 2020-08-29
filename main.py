@@ -17,15 +17,15 @@ Colors = colors.color_list
 Materials = materials.material_list
 
 # Create Player as a body
-# X pos, Y pos, width, height, material, mass, gravity accel, terminal x, terminal y, friction x, friction y
-AIR_FRICTION = 0.01
-GRAVITY = -0.25
+# X pos, Y pos, width, height, material, mass, gravity accel, terminal x, terminal y, air_friction
+AIR_FRICTION = 0.001
+GRAVITY = -0.45
 MAX_VELO = 10
 
 #Create Player Kinematic Body
-Player = KinematicBody(160, 290, 30, 30, Materials["Player"], 20, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION, AIR_FRICTION)
-Box = KinematicBody(200, 290, 30, 30, Materials["KinematicSolid"], 1, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION, AIR_FRICTION)
-Box_two = KinematicBody(270, 290, 30, 30, Materials["KinematicSolid"], 30, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION, AIR_FRICTION)
+Player = KinematicBody(160, 290, 30, 30, Materials["Player"], 20, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
+Box = KinematicBody(270, 270, 15, 15, Materials["KinematicSolid"], 3, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
+Box_two = KinematicBody(350, 290, 15, 15, Materials["KinematicSolid"], 3, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
 
 #Create Static Bodies
 # X pos, Y pos, width, height, surface friction
@@ -44,10 +44,10 @@ PoolWater = StaticBody(20, 100, 180, 60, Materials["Water"])
 Ice = StaticBody(390, 300, 250, 20, Materials["Ice"])
 
 def PlayerControls():
-	UP_FORCE = 150
-	RIGHT_FORCE = 4
-	LEFT_FORCE = -4
-	MAX_X_VELO = 4
+	UP_FORCE = 130
+	RIGHT_ACCEL = 0.3
+	LEFT_ACCEL = -0.3
+	MAX_X_VELO = 5
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			running = False
@@ -56,10 +56,10 @@ def PlayerControls():
 				Player.apply_force(0, UP_FORCE)
 
 	keys = pygame.key.get_pressed()
-	if keys[pygame.K_RIGHT] or keys[pygame.K_d] and Player.get_x_velo() < MAX_X_VELO:
-		Player.apply_force(RIGHT_FORCE, 0)
-	elif keys[pygame.K_LEFT] or keys[pygame.K_a] and abs(Player.get_x_velo()) < MAX_X_VELO:
-		Player.apply_force(LEFT_FORCE, 0)
+	if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and Player.get_x_velo() < MAX_X_VELO:
+		Player.accelerate(RIGHT_ACCEL, 0)
+	elif (keys[pygame.K_LEFT] or keys[pygame.K_a]) and abs(Player.get_x_velo()) < MAX_X_VELO:
+		Player.accelerate(LEFT_ACCEL, 0)
 
 def fill_screen(color):
 	screen.fill(color)
