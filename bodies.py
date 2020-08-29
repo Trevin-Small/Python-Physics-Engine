@@ -293,14 +293,14 @@ class KinematicBody(StaticBody):
 							net_y = self.y_velo + body.get_y_velo()
 							difference_x = self.x_velo - body.get_x_velo()
 							prev_difference_x = self.prev_x_velo - body.get_prev_x()
-							self.future_y_velo = -net_y * (1 - self.systemic_mass)
+							self.future_y_velo = net_y * (1 - self.systemic_mass)
 							self.future_y_pos = body_parameters[1] + body_parameters[3]
 					elif side_collisions["b"] < side_collisions["t"] and side_collisions["b"] < side_collisions["l"] and side_collisions["b"] < side_collisions["r"]:				
 						if body.get_y_velo() > self.prev_y_velo:
 							net_y = self.y_velo + body.get_y_velo()
 							difference_x = self.x_velo - body.get_x_velo()
 							prev_difference_x = self.prev_x_velo - body.get_prev_x()
-							self.future_y_velo = -net_y * (1 - self.systemic_mass)
+							self.future_y_velo = net_y * (1 - self.systemic_mass)
 							self.future_y_pos = body_parameters[1] - self.height
 					elif side_collisions["l"] < side_collisions["r"] and side_collisions["l"] < side_collisions["t"] and side_collisions["l"] < side_collisions["b"]:
 						x_collision = True

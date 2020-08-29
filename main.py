@@ -18,7 +18,7 @@ Materials = materials.material_list
 
 # Create Player as a body
 # X pos, Y pos, width, height, material, mass, gravity accel, terminal x, terminal y, friction x, friction y
-AIR_FRICTION = 0
+AIR_FRICTION = 0.01
 GRAVITY = -0.25
 MAX_VELO = 10
 
