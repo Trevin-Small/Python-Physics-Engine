@@ -5,7 +5,7 @@ This project is a simple 2D Physics Engine made with Python and Pygame.
 It may be used to build a game later on, but for now the engine itself is still under development.
 
 
-![Physics Engine Running](exampleImages/engineRunning)
+![Physics Engine Running](https://github.com/Trevin-S/Python-Physics-Engine/blob/master/exampleImages/engineRunning.png)
 
 
 ### Bodies ###
