@@ -4,6 +4,10 @@ This project is a simple 2D Physics Engine made with Python and Pygame.
 
 It may be used to build a game later on, but for now the engine itself is still under development.
 
+
+![Physics Engine Running](exampleImages/engineRunning)
+
+
 ### Bodies ###
 
 The engine is based off of bodies, shapes with a position and size that can be collided with.
