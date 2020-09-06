@@ -93,6 +93,12 @@ class KinematicBody(StaticBody):
 		self.future_y_velo = None
 		self.future_x_pos = None
 		self.future_y_pos = None
+		self.collision_records = {
+			"t" : False,
+			"b" : False,
+			"l" : False,
+			"r" : False
+		}
 
 	def get_x_velo(self):
 		return self.x_velo
@@ -204,7 +210,7 @@ class KinematicBody(StaticBody):
 
 		return -self.friction_force_y
 
-	def detect_collision(self, *args):
+	def detect_collision(self, staticBodies, *args):
 		KinematicCollision = False
 		x_collision = False
 		net_x = self.x_velo
@@ -214,7 +220,7 @@ class KinematicBody(StaticBody):
 		prev_difference_x = self.prev_x_velo
 		prev_difference_y = self.prev_y_velo
 
-		for body in args:
+		for body in list(args) + staticBodies:
 			body_parameters = body.get_body_parameters()
 			super().detect_collision(body_parameters)
 			material_type = body.get_material_type()
@@ -252,22 +258,26 @@ class KinematicBody(StaticBody):
 							self.temp_max_y_vector("max", 0)
 							self.set_y_pos(body_parameters[1] + body_parameters[3])
 							self.temp_x_friction(body_parameters[4])
-							self.accelerate(0, -self.bounce_y)
+							self.y_velo += -self.bounce_y
+							self.collision_records["t"] = True
 						elif side_collisions["b"] < side_collisions["t"] and side_collisions["b"] < side_collisions["l"] and side_collisions["b"] < side_collisions["r"]:	
 							self.temp_max_y_vector("min", 0)				
 							self.set_y_pos(body_parameters[1] - self.height)
 							self.temp_x_friction(body_parameters[4])		
-							self.accelerate(0, self.bounce_y)	
+							self.y_velo += self.bounce_y	
+							self.collision_records["b"] = True
 						elif side_collisions["l"] < side_collisions["r"] and side_collisions["l"] < side_collisions["t"] and side_collisions["l"] < side_collisions["b"]:
 							self.temp_max_x_vector("min", 0)
 							self.set_x_pos(body_parameters[0] + body_parameters[2])
 							self.temp_y_friction(body_parameters[4])
-							self.accelerate(self.bounce_x, 0)
+							self.x_velo += self.bounce_x
+							self.collision_records["l"] = True
 						elif side_collisions["r"] < side_collisions["l"] and side_collisions["r"] < side_collisions["t"] and side_collisions["r"] < side_collisions["b"]:
 							self.temp_max_x_vector("max", 0)
 							self.set_x_pos(body_parameters[0] - self.width)
 							self.temp_y_friction(body_parameters[4])
-							self.accelerate(-self.bounce_x, 0)
+							self.x_velo += -self.bounce_x
+							self.collision_records["r"] = True
 
 					else:
 						self.temp_x_friction(body_parameters[4])
@@ -275,13 +285,6 @@ class KinematicBody(StaticBody):
 				else:
 
 					KinematicCollision = True
-					net_x += body.get_x_velo()
-					net_y += body.get_y_velo()
-					difference_x -= body.get_x_velo()
-					difference_y -= body.get_y_velo()
-					prev_difference_x -= body.get_prev_x()
-					prev_difference_y -= body.get_prev_y()
-
 					mass = body.get_mass()
 					net_mass = self.mass + mass
 					self.systemic_mass = self.mass / net_mass
@@ -289,34 +292,46 @@ class KinematicBody(StaticBody):
 
 					if side_collisions["t"] < side_collisions["b"] and side_collisions["t"] < side_collisions["l"] and side_collisions["t"] < side_collisions["r"]:
 						if body.get_y_velo() < self.prev_y_velo:
-							net_y = self.y_velo + body.get_y_velo()
-							difference_x = self.x_velo - body.get_x_velo()
-							prev_difference_x = self.prev_x_velo - body.get_prev_x()
-							self.future_y_velo = net_y * (1 - self.systemic_mass)
-							self.future_y_pos = body_parameters[1] + body_parameters[3]
+							if body.collision_records["b"] == False:
+								net_y = self.y_velo + body.get_y_velo()
+								difference_x = self.x_velo - body.get_x_velo()
+								prev_difference_x = self.prev_x_velo - body.get_prev_x()
+								self.y_velo = net_y * (1 - self.systemic_mass)
+							else:
+								self.y_velo = 0
+							self.y_pos = body_parameters[1] + body_parameters[3]
 					elif side_collisions["b"] < side_collisions["t"] and side_collisions["b"] < side_collisions["l"] and side_collisions["b"] < side_collisions["r"]:				
 						if body.get_y_velo() > self.prev_y_velo:
-							net_y = self.y_velo + body.get_y_velo()
-							difference_x = self.x_velo - body.get_x_velo()
-							prev_difference_x = self.prev_x_velo - body.get_prev_x()
-							self.future_y_velo = net_y * (1 - self.systemic_mass)
-							self.future_y_pos = body_parameters[1] - self.height
+							if body.collision_records["t"] == False:
+								net_y = self.y_velo + body.get_y_velo()
+								difference_x = self.x_velo - body.get_x_velo()
+								prev_difference_x = self.prev_x_velo - body.get_prev_x()
+								self.y_velo = net_y * (1 - self.systemic_mass)
+							else:
+								self.y_velo = 0
+							self.y_pos = body_parameters[1] - self.height
 					elif side_collisions["l"] < side_collisions["r"] and side_collisions["l"] < side_collisions["t"] and side_collisions["l"] < side_collisions["b"]:
 						x_collision = True
 						if body.get_x_velo() > self.prev_x_velo:
-							net_x = self.x_velo + body.get_x_velo()
-							difference_y = self.y_velo - body.get_y_velo()
-							prev_difference_y = self.prev_y_velo - body.get_prev_y()		
-							self.future_x_velo = net_x * (1 - self.systemic_mass)
-							self.future_x_pos = body_parameters[0] + body_parameters[2]
+							if body.collision_records["r"] == False:
+								net_x = self.x_velo + body.get_x_velo()
+								difference_y = self.y_velo - body.get_y_velo()
+								prev_difference_y = self.prev_y_velo - body.get_prev_y()		
+								self.x_velo = net_x * (1 - self.systemic_mass)
+							else:
+								self.x_velo = 0
+							self.x_pos = body_parameters[0] + body_parameters[2]
 					elif side_collisions["r"] < side_collisions["l"] and side_collisions["r"] < side_collisions["t"] and side_collisions["r"] < side_collisions["b"]:
 						x_collision = True
 						if body.get_x_velo() < self.prev_x_velo:
-							net_x = self.x_velo + body.get_x_velo()
-							difference_y = self.y_velo - body.get_y_velo()
-							prev_difference_y = self.prev_y_velo - body.get_prev_y()				
-							self.future_x_velo = net_x * (1 - self.systemic_mass)
-							self.future_x_pos = body_parameters[0] - self.width
+							if body.collision_records["l"] == False:
+								net_x = self.x_velo + body.get_x_velo()
+								difference_y = self.y_velo - body.get_y_velo()
+								prev_difference_y = self.prev_y_velo - body.get_prev_y()				
+								self.x_velo = net_x * (1 - self.systemic_mass)
+							else:
+								self.x_velo = 0
+							self.x_pos = body_parameters[0] - self.width
 
 		if KinematicCollision == True:
 			KinematicCollision = False
@@ -324,6 +339,9 @@ class KinematicBody(StaticBody):
 				self.apply_force(0, self.friction_y(difference_y, prev_difference_y, body_parameters[4], False))
 			else:
 				self.apply_force(self.friction_x(difference_x, prev_difference_x, body_parameters[4], False), 0)
+
+	def static_collision_side(self):
+		return self.side_collided
 
 	def interact(self, *args):
 		self.detect_collision(*args)
@@ -341,7 +359,7 @@ class KinematicBody(StaticBody):
 		elif self.future_x_velo != None:
 			if abs(self.future_x_velo) > self.max_x_velo:
 				self.future_x_velo = self.max_x_velo * (abs(self.future_x_velo) / self.future_x_velo)
-				self.x_velo = self.future_x_velo + self.accel_x
+				self.x_velo = self.future_x_velo
 			else:
 				self.x_velo = self.future_x_velo + self.accel_x
 
@@ -350,7 +368,7 @@ class KinematicBody(StaticBody):
 		elif self.future_y_velo != None:
 			if abs(self.future_y_velo) > self.max_y_velo:
 				self.future_y_velo = self.max_y_velo * (abs(self.future_y_velo) / self.future_y_velo)
-				self.y_velo = self.future_y_velo + self.accel_y
+				self.y_velo = self.future_y_velo
 			else:
 				self.y_velo = self.future_y_velo + self.accel_y
 
@@ -366,6 +384,9 @@ class KinematicBody(StaticBody):
 
 		self.prev_y_velo = self.y_velo
 		self.prev_x_velo = self.x_velo
+
+		for key in self.collision_records:
+			self.collision_records[key] = False
 
 		self.accel_x = 0
 		self.accel_y = 0

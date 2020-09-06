@@ -24,24 +24,40 @@ MAX_VELO = 10
 
 #Create Player Kinematic Body
 Player = KinematicBody(160, 290, 30, 30, Materials["Player"], 20, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
-Box = KinematicBody(270, 270, 15, 15, Materials["KinematicSolid"], 3, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
-Box_two = KinematicBody(350, 290, 15, 15, Materials["KinematicSolid"], 3, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
+Box = KinematicBody(270, 270, 30, 30, Materials["KinematicSolid"], 10, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
+Box_two = KinematicBody(350, 290, 30, 30, Materials["KinematicSolid"], 10, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
 
-#Create Static Bodies
-# X pos, Y pos, width, height, surface friction
-Floor = StaticBody(20, screen_size[1] - 20, 390, 20, Materials["StandardSolid"])
-Ceiling = StaticBody(0, 0, screen_size[0], 20, Materials["StandardSolid"])
-Wall = StaticBody(400, 200, 20, 60, Materials["StandardSolid"])
-TrampolinePlatform = StaticBody(420, 200, 220, 20, Materials["Trampoline"])
-PlatformTwo = StaticBody(200, 100, 220, 20, Materials["StandardSolid"])
-Wall_two = StaticBody(620, 20, 20, 300, Materials["StandardSolid"])
-QuicksandPit = StaticBody(20, screen_size[1] - 80, 100, 60, Materials["Quicksand"])
-PitWall = StaticBody(120, 240, 20, 80, Materials["StandardSolid"])
-Wall_three = StaticBody(0, 20, 20, 300, Materials["StandardSolid"])
-PoolBottom = StaticBody(0, 160, 200, 20, Materials["StandardSolid"])
-PoolWall = StaticBody(200, 110, 20, 70, Materials["StandardSolid"])
-PoolWater = StaticBody(20, 100, 180, 60, Materials["Water"])
-Ice = StaticBody(390, 300, 250, 20, Materials["Ice"])
+#Floor = StaticBody(20, screen_size[1] - 20, 390, 20, Materials["StandardSolid"])
+#Ceiling = StaticBody(0, 0, screen_size[0], 20, Materials["StandardSolid"])
+#Wall = StaticBody(400, 200, 20, 60, Materials["StandardSolid"])
+#TrampolinePlatform = StaticBody(420, 200, 220, 20, Materials["Trampoline"])
+#PlatformTwo = StaticBody(200, 100, 220, 20, Materials["StandardSolid"])
+#Wall_two = StaticBody(620, 20, 20, 300, Materials["StandardSolid"])
+#QuicksandPit = StaticBody(20, screen_size[1] - 80, 100, 60, Materials["Quicksand"])
+#PitWall = StaticBody(120, 240, 20, 80, Materials["StandardSolid"])
+#Wall_three = StaticBody(0, 20, 20, 300, Materials["StandardSolid"])
+#PoolBottom = StaticBody(0, 160, 200, 20, Materials["StandardSolid"])
+#PoolWall = StaticBody(200, 110, 20, 70, Materials["StandardSolid"])
+#PoolWater = StaticBody(20, 100, 180, 60, Materials["Water"])
+#Ice = StaticBody(390, 300, 250, 20, Materials["Ice"])
+
+StaticBodies = [
+	#Create Static Bodies
+	# X pos, Y pos, width, height, surface friction
+	StaticBody(20, screen_size[1] - 20, 390, 20, Materials["StandardSolid"]),
+	StaticBody(0, 0, screen_size[0], 20, Materials["StandardSolid"]),
+	StaticBody(400, 200, 20, 60, Materials["StandardSolid"]),
+	StaticBody(420, 200, 220, 20, Materials["Trampoline"]),
+	StaticBody(200, 100, 220, 20, Materials["StandardSolid"]),
+	StaticBody(620, 20, 20, 300, Materials["StandardSolid"]),
+	StaticBody(20, screen_size[1] - 80, 100, 60, Materials["Quicksand"]),
+	StaticBody(120, 240, 20, 80, Materials["StandardSolid"]),
+	StaticBody(0, 20, 20, 300, Materials["StandardSolid"]),
+	StaticBody(0, 160, 200, 20, Materials["StandardSolid"]),
+	StaticBody(200, 110, 20, 70, Materials["StandardSolid"]),
+	StaticBody(20, 100, 180, 60, Materials["Water"]),
+	StaticBody(390, 300, 250, 20, Materials["Ice"])
+]
 
 def PlayerControls():
 	UP_FORCE = 130
@@ -64,8 +80,9 @@ def PlayerControls():
 def fill_screen(color):
 	screen.fill(color)
 
-def screen_blit(*args):
-	for body in args:
+def screen_blit(Bodies, *args):
+
+	for body in Bodies + list(args):
 		color = body.get_color()
 		body_parameters = body.get_body_parameters()[:-3]
 		pygame.draw.rect(screen, color, body_parameters)
@@ -79,19 +96,17 @@ running = True
 while running:
 
 	PlayerControls()
-	Player.interact(Floor, Ceiling, Wall, Wall_two, TrampolinePlatform, QuicksandPit, PitWall, Ice, Wall_three, PoolBottom, PoolWall, PoolWater, PlatformTwo)
-	Box.interact(Floor, Ceiling, Wall, Wall_two, TrampolinePlatform, QuicksandPit, PitWall, Wall_three, PoolBottom, PoolWall, PoolWater, PlatformTwo, Ice)
-	Box_two.interact(Floor, Ceiling, Wall, Wall_two, TrampolinePlatform, QuicksandPit, PitWall, Wall_three, PoolBottom, PoolWall, PoolWater, PlatformTwo, Ice)
-	Player.interact(Box, Box_two)
-	Box.interact(Player, Box_two)
-	Box_two.interact(Player, Box)
-	Player.update()
+	Player.interact(StaticBodies, Box, Box_two)
+	Box.interact(StaticBodies, Player, Box_two)
+	Box_two.interact(StaticBodies, Player, Box)
 	Box.update()
 	Box_two.update()
+	Player.update()
 
 	fill_screen(Colors["black"])
-	screen_blit(Floor, Ceiling, Ice, QuicksandPit, PitWall, Wall, TrampolinePlatform, Wall_two, Wall_three, PoolBottom, PoolWall, PoolWater, PlatformTwo, Box, Box_two, Player)
+	screen_blit(StaticBodies, Box, Box_two, Player)
 	update_screen(60)
+	print(clock.get_fps())
 
 # Game Exit
 pygame.quit()
