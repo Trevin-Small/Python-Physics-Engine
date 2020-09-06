@@ -27,36 +27,22 @@ Player = KinematicBody(160, 290, 30, 30, Materials["Player"], 20, GRAVITY, MAX_V
 Box = KinematicBody(270, 270, 30, 30, Materials["KinematicSolid"], 10, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
 Box_two = KinematicBody(350, 290, 30, 30, Materials["KinematicSolid"], 10, GRAVITY, MAX_VELO, MAX_VELO, AIR_FRICTION)
 
-#Floor = StaticBody(20, screen_size[1] - 20, 390, 20, Materials["StandardSolid"])
-#Ceiling = StaticBody(0, 0, screen_size[0], 20, Materials["StandardSolid"])
-#Wall = StaticBody(400, 200, 20, 60, Materials["StandardSolid"])
-#TrampolinePlatform = StaticBody(420, 200, 220, 20, Materials["Trampoline"])
-#PlatformTwo = StaticBody(200, 100, 220, 20, Materials["StandardSolid"])
-#Wall_two = StaticBody(620, 20, 20, 300, Materials["StandardSolid"])
-#QuicksandPit = StaticBody(20, screen_size[1] - 80, 100, 60, Materials["Quicksand"])
-#PitWall = StaticBody(120, 240, 20, 80, Materials["StandardSolid"])
-#Wall_three = StaticBody(0, 20, 20, 300, Materials["StandardSolid"])
-#PoolBottom = StaticBody(0, 160, 200, 20, Materials["StandardSolid"])
-#PoolWall = StaticBody(200, 110, 20, 70, Materials["StandardSolid"])
-#PoolWater = StaticBody(20, 100, 180, 60, Materials["Water"])
-#Ice = StaticBody(390, 300, 250, 20, Materials["Ice"])
-
 StaticBodies = [
 	#Create Static Bodies
 	# X pos, Y pos, width, height, surface friction
-	StaticBody(20, screen_size[1] - 20, 390, 20, Materials["StandardSolid"]),
-	StaticBody(0, 0, screen_size[0], 20, Materials["StandardSolid"]),
-	StaticBody(400, 200, 20, 60, Materials["StandardSolid"]),
-	StaticBody(420, 200, 220, 20, Materials["Trampoline"]),
-	StaticBody(200, 100, 220, 20, Materials["StandardSolid"]),
-	StaticBody(620, 20, 20, 300, Materials["StandardSolid"]),
-	StaticBody(20, screen_size[1] - 80, 100, 60, Materials["Quicksand"]),
-	StaticBody(120, 240, 20, 80, Materials["StandardSolid"]),
-	StaticBody(0, 20, 20, 300, Materials["StandardSolid"]),
-	StaticBody(0, 160, 200, 20, Materials["StandardSolid"]),
-	StaticBody(200, 110, 20, 70, Materials["StandardSolid"]),
-	StaticBody(20, 100, 180, 60, Materials["Water"]),
-	StaticBody(390, 300, 250, 20, Materials["Ice"])
+	StaticBody(20, screen_size[1] - 20, 390, 20, Materials["StandardSolid"]), # Floor
+	StaticBody(0, 0, screen_size[0], 20, Materials["StandardSolid"]), # Ceiling
+	StaticBody(400, 200, 20, 60, Materials["StandardSolid"]), # Left Trampoline Wall
+	StaticBody(420, 200, 220, 20, Materials["Trampoline"]), # Trampoline
+	StaticBody(200, 100, 220, 20, Materials["StandardSolid"]), # Top Platform
+	StaticBody(620, 20, 20, 300, Materials["StandardSolid"]), # Right hand wall
+	StaticBody(20, screen_size[1] - 80, 100, 60, Materials["Quicksand"]), # Quicksand
+	StaticBody(120, 240, 20, 80, Materials["StandardSolid"]), # Quicksand wall
+	StaticBody(0, 20, 20, 300, Materials["StandardSolid"]), # Left hand wall
+	StaticBody(0, 160, 200, 20, Materials["StandardSolid"]), # Pool Bottom
+	StaticBody(200, 110, 20, 70, Materials["StandardSolid"]), # Pool Right hand Wall
+	StaticBody(20, 100, 180, 60, Materials["Water"]), # Pool Water
+	StaticBody(390, 300, 250, 20, Materials["Ice"]) # Ice
 ]
 
 def PlayerControls():
