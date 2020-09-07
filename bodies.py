@@ -91,8 +91,6 @@ class KinematicBody(StaticBody):
 		self.temp_friction_y = 0
 		self.future_x_velo = None
 		self.future_y_velo = None
-		self.future_x_pos = None
-		self.future_y_pos = None
 		self.collision_records = {
 			"t" : False,
 			"b" : False,
@@ -288,7 +286,6 @@ class KinematicBody(StaticBody):
 					mass = body.get_mass()
 					net_mass = self.mass + mass
 					self.systemic_mass = self.mass / net_mass
-					systemic_mass = mass / net_mass
 
 					if side_collisions["t"] < side_collisions["b"] and side_collisions["t"] < side_collisions["l"] and side_collisions["t"] < side_collisions["r"]:
 						if body.get_y_velo() < self.prev_y_velo:
@@ -371,16 +368,9 @@ class KinematicBody(StaticBody):
 				self.y_velo = self.future_y_velo
 			else:
 				self.y_velo = self.future_y_velo + self.accel_y
-
-		if self.future_x_pos != None:
-			self.x_pos = self.future_x_pos + self.x_velo
-		else:
-			self.x_pos += self.x_velo
-
-		if self.future_y_pos != None:
-			self.y_pos = self.future_y_pos + self.y_velo
-		else:
-			self.y_pos -= self.y_velo
+		
+		self.x_pos += self.x_velo
+		self.y_pos -= self.y_velo
 
 		self.prev_y_velo = self.y_velo
 		self.prev_x_velo = self.x_velo

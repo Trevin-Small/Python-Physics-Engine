@@ -46,10 +46,12 @@ StaticBodies = [
 ]
 
 def PlayerControls():
+	global running 
 	UP_FORCE = 130
 	RIGHT_ACCEL = 0.3
 	LEFT_ACCEL = -0.3
 	MAX_X_VELO = 5
+
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			running = False
