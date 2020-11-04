@@ -1,4 +1,4 @@
-# Python 2D Physics Engine #
+# Python Physics Engine (2D)#
 
 This project is a simple 2D Physics Engine made with Python and Pygame.
 
