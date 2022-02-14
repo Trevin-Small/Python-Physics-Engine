@@ -1,5 +1,11 @@
-# Python Physics Engine (2D) #
+# NOTICE: This project is old and no longer being worked on! 
+### Much of the code is poorly written, optimized, and generally messy (😅 I was learning a LOT at this point...)
+### I may return to this project at some point (and start over lol) but for now, the project is archived.
+<br>
+<br>
+<br>
 
+# Python Physics Engine (2D) 
 This project is a simple 2D Physics Engine made with Python and Pygame.
 
 It may be used to build a game later on, but for now the engine itself is still under development.
